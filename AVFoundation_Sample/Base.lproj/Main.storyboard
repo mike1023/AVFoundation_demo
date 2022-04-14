@@ -35,13 +35,25 @@
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="Jz3-WC-Jdm">
                                 <rect key="frame" x="18" y="426" width="378" height="31"/>
                             </slider>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rl0-kx-Xr6">
+                                <rect key="frame" x="167.5" y="635.5" width="79" height="31"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="start PIP">
+                                    <color key="baseForegroundColor" systemColor="systemGreenColor"/>
+                                </buttonConfiguration>
+                                <connections>
+                                    <action selector="pipAction:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Pc7-gB-CYa"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="rl0-kx-Xr6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="203" id="G5z-rc-E9U"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="Jz3-WC-Jdm" secondAttribute="trailing" constant="20" id="H9y-LX-oEt"/>
                             <constraint firstItem="Qgf-r9-HFJ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="QBb-ug-2Xw"/>
                             <constraint firstItem="Jz3-WC-Jdm" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="bJx-4N-R9d"/>
+                            <constraint firstItem="rl0-kx-Xr6" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="bgj-B7-8tv"/>
                             <constraint firstItem="Jz3-WC-Jdm" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ddZ-fL-14e"/>
                             <constraint firstItem="xBc-Rb-Ag6" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" constant="125" id="elM-Tt-TzX"/>
                             <constraint firstItem="Jz3-WC-Jdm" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="382" id="rwy-qZ-Ut3"/>
@@ -50,6 +62,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="pipBtn" destination="rl0-kx-Xr6" id="j0N-vZ-ufl"/>
                         <outlet property="playImv" destination="xBc-Rb-Ag6" id="Dwx-DQ-wPQ"/>
                         <outlet property="slider" destination="Jz3-WC-Jdm" id="pDR-Yv-K1b"/>
                         <outlet property="timeLab" destination="Qgf-r9-HFJ" id="JT4-ag-C5K"/>
@@ -63,6 +76,9 @@
     <resources>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemGreenColor">
+            <color red="0.20392156862745098" green="0.7803921568627451" blue="0.34901960784313724" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

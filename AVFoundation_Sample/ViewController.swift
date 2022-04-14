@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var playImv: UIImageView!
     @IBOutlet weak var timeLab: UILabel!
     @IBOutlet weak var slider: UISlider!
+    @IBOutlet weak var pipBtn: UIButton!
     
     var player:AVPlayer?
     var myPlayer: AVPlayerLayer?
@@ -21,6 +22,8 @@ class ViewController: UIViewController {
     var myplayer: AVPlayerLayer?
     var status: AVPlayerItem.Status?
     var timeObserverToken: Any?
+    var pipController: AVPictureInPictureController?
+    var shouldPlayWhenActive:Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,8 +49,50 @@ class ViewController: UIViewController {
         view.layer.addSublayer(myplayer!)
         playItem?.addObserver(self, forKeyPath: #keyPath(AVPlayerItem.status), options: [.new, .old], context: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(playFinish), name: .AVPlayerItemDidPlayToEndTime, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(remoteNotification), name: AVAudioSession.routeChangeNotification , object: nil)
         addTimeObserver()
+        NotificationCenter.default.addObserver(self, selector: #selector(willStopPlay), name: Notification.Name(rawValue: "willStopPlay"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(willStartPlay), name: Notification.Name(rawValue: "willStartPlay"), object: nil)
+
     }
+    
+    @objc func willStopPlay() {
+        print("willStopPlay")
+        if myplayer?.player?.rate == 0 {
+            shouldPlayWhenActive = false
+        } else {
+            shouldPlayWhenActive = true
+        }
+        myplayer?.player?.pause()
+        playImv.image = UIImage(systemName: "play.circle.fill")
+    }
+    
+    @objc func willStartPlay() {
+        print("willStartPlay")
+        if status == AVPlayerItem.Status.readyToPlay {
+            if shouldPlayWhenActive {
+                myplayer?.player?.play()
+                playImv.image = UIImage(systemName: "pause.circle.fill")
+            }
+        }
+    }
+    
+    @IBAction func pipAction(_ sender: Any) {
+        if AVPictureInPictureController.isPictureInPictureSupported() == true {
+            pipController = AVPictureInPictureController.init(playerLayer: myPlayer!)
+            pipController?.delegate = self
+            if pipController!.isPictureInPicturePossible {
+                if pipController!.isPictureInPictureActive {
+                    pipController?.stopPictureInPicture()
+                } else {
+                    pipController?.startPictureInPicture()
+                }
+            }
+        } else {
+            print("not supported")
+        }
+    }
+    
     
     func addTimeObserver() {
         let timeScale = CMTimeScale(NSEC_PER_SEC)
@@ -171,14 +216,54 @@ class ViewController: UIViewController {
     
     @objc func playFinish(noty: Notification) {
         let playItem = noty.object as! AVPlayerItem
-        playItem.seek(to: CMTime.init(value: 0, timescale: 1))
+        playItem.seek(to: CMTime.init(value: 0, timescale: 1), completionHandler: nil)
         slider.value = 0
         player?.pause()
         playImv.image = UIImage(systemName: "play.circle.fill")
     }
     
-    
-    
+    @objc func remoteNotification(noty: Notification) {
+        guard let userinfo = noty.userInfo,
+        let reasonValue = userinfo[AVAudioSessionRouteChangeReasonKey] as? UInt,
+        let reason = AVAudioSession.RouteChangeReason(rawValue: reasonValue) else {
+            return
+        }
+        switch reason {
+        case .unknown:
+            print("unknown")
+        case .newDeviceAvailable:
+            print("newDeviceAvailable")
+        case .oldDeviceUnavailable:
+            print("oldDeviceUnavailable")
+            myplayer?.player?.pause()
+            playImv.image = UIImage(systemName: "play.circle.fill")
+        default:
+            print("default")
+        }
+    }
+}
 
+extension ViewController: AVPictureInPictureControllerDelegate {
+    func pictureInPictureControllerWillStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        
+    }
+    
+    func pictureInPictureControllerDidStartPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        
+    }
+    
+    func pictureInPictureControllerWillStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        
+    }
+    
+    func pictureInPictureControllerDidStopPictureInPicture(_ pictureInPictureController: AVPictureInPictureController) {
+        
+    }
+    
+    func pictureInPictureController(_ pictureInPictureController: AVPictureInPictureController, failedToStartPictureInPictureWithError error: Error) {
+        
+    }
+    
+    
 }
 
